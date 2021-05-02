@@ -9,10 +9,12 @@ keywords = ['homeproject', 'surveillance']
 
 [tool.poetry.dependencies]
 python = "^3.8"
-
+fastapi = "0.63"
+uvicorn = "0.13.4"
 requests = "2.22.0"
 environs = "9.2.0"
 python-json-logger = "2.0.1"
+opencv-python = "4.2.0.32"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.2"
