@@ -1,15 +1,15 @@
-<html>
+<html lang="es">
 <head>
     <title>Item Details</title>
     <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
 </head>
 <body>
-    <h1>Item ID: {{ id }}</h1>
+{#    <h1>Item ID: {{ id }}</h1>#}
     <div class="container">
         <div class="row">
             <div class="col-lg-8  offset-lg-2">
                 <h3 class="mt-5">Live Streaming</h3>
-                <img src="{{ url_for('video_feed') }}" width="100%">
+                <img src="{{ url_for('video_feed') }}" alt='Video not found' width="40%">
             </div>
         </div>
     </div>
