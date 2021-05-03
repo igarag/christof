@@ -4,18 +4,18 @@
 from fastapi import APIRouter, Response
 
 from app.conf.settings import logger
-from app.services.security_webcam import gen_frames
+from app.services.security_webcam import TrumanCamera
 
 router = APIRouter(
     prefix=""
 )
 
 
-@router.post('/video-feed')
+@router.get('/video-feed')
 def video_feed() -> Response:
     logger.debug(f'Sending frames')
     headers = {'mimetype': 'multipart/x-mixed-replace; boundary=frame'}
-    return Response(gen_frames(), headers=headers)
+    return Response(TrumanCamera.gen_frames(), headers=headers)
 
 
 # @app.post("/vector-image")

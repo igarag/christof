@@ -2,7 +2,7 @@ import logging
 
 from pythonjsonlogger import jsonlogger
 
-from conf.environment import LOG_FILE, LOGGER_NAME, JSON_LOGGER, JSON_LOGGER_INDENT
+from app.conf.environment import LOG_FILE, LOGGER_NAME, JSON_LOGGER, JSON_LOGGER_INDENT
 
 logger = logging.getLogger(LOGGER_NAME)
 stream_handler = logging.StreamHandler()
