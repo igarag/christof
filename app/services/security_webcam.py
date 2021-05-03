@@ -12,56 +12,35 @@ import cv2
 
 from app.conf.settings import logger
 
-cam = cv2.VideoCapture('/dev/video2')
 
-total = 70
-current = 0
+class TrumanCamera:
+    def __new__(cls):
 
-ret, frame = cam.read()
+        devices = 4
+        for device in range(devices):
+            camera = cv2.VideoCapture(f'/dev/video{device}')
+            if camera:
+                logger.info(f'Camera {device} selected.')
+                break
+            else:
+                logger.error('Camera found')
+        return camera
 
-tic = datetime.datetime.now()
+    def __init__(self, camera='0'):
+        self.camera = camera
+        self.total = 70
 
-camera = cv2.VideoCapture(0)
+    def gen_frames(self) -> Generator:
+        while True:
+            success, frame = self.camera.read()
+            if not success:
+                logger.error('No camera found.')
+                break
+            else:
+                logger.info('Sending frames')
+                ret, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-
-def get_camera_from_os():
-    devices = 4
-    for device in range(devices):
-        camera = cv2.VideoCapture(f'/dev/video{device}')
-
-        if camera != None:
-            logger.info(f'Camera {device} selected.')
-            break
-        else:
-            logger.error('No camera found')
-    return camera
-
-
-def gen_frames() -> Generator:
-    while True:
-        success, frame = camera.read()
-        if not success:
-            logger.error('No camera found.')
-            break
-        else:
-            logger.info('Sending frames')
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-while True:
-    if current >= total:
-        ret, frame = cam.read()
-        cv2.imshow('frame', frame)
-        if (datetime.datetime.now() - tic) > datetime.timedelta(seconds=1):
-            tic = datetime.datetime.now()
-        current = 0
-    current += 1
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-cam.release()
-cv2.destroyAllWindows()
+        self.camera.release()
