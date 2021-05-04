@@ -15,7 +15,8 @@ router = APIRouter(
 def video_feed() -> Response:
     logger.debug(f'Sending frames')
     headers = {'mimetype': 'multipart/x-mixed-replace; boundary=frame'}
-    return Response(TrumanCamera.gen_frames(), headers=headers)
+    camera = TrumanCamera
+    return Response(camera.gen_frames(), headers=headers)
 
 
 # @app.post("/vector-image")

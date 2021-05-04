@@ -14,7 +14,7 @@ from app.conf.settings import logger
 
 
 class TrumanCamera:
-    def __new__(cls):
+    def get_camera_from_os(self) -> cv2.VideoCapture:
 
         devices = 4
         for device in range(devices):
@@ -26,8 +26,8 @@ class TrumanCamera:
                 logger.error('Camera found')
         return camera
 
-    def __init__(self, camera='0'):
-        self.camera = camera
+    def __init__(self):
+        self.camera = self.get_camera_from_os()
         self.total = 70
 
     def gen_frames(self) -> Generator:
