@@ -1,6 +1,8 @@
 # import io
 # from starlette.responses import StreamingResponse
 
+from typing import Generator
+import cv2
 from fastapi import APIRouter, Response
 
 from app.conf.settings import logger
@@ -11,12 +13,27 @@ router = APIRouter(
 )
 
 
+def gen_frames():
+    camera = cv2.VideoCapture(f'0')
+    while True:
+        success, frame = camera.read()
+        if not success:
+            logger.error('No camera found.')
+            break
+        else:
+            logger.info('Sending frames')
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    camera.release()
+
+
 @router.get('/video-feed')
 def video_feed() -> Response:
     logger.debug(f'Sending frames')
     headers = {'mimetype': 'multipart/x-mixed-replace; boundary=frame'}
-    camera = TrumanCamera
-    return Response(camera.gen_frames(), headers=headers)
+    return Response(gen_frames(), headers=headers)
 
 
 # @app.post("/vector-image")
