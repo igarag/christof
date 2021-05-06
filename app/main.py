@@ -1,3 +1,4 @@
+import os
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -10,9 +11,11 @@ app = FastAPI()
 
 app.include_router(camera.router)
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+print(PROJECT_DIR)
+app.mount("/app/static", StaticFiles(directory="static"), name="static")
 
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
 
 
 @app.get('/')
