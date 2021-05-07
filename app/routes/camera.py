@@ -5,7 +5,7 @@ from typing import Generator
 import cv2
 from fastapi import APIRouter, Response
 
-from app.conf.settings import logger
+from app.conf.logger import logger
 from app.services.security_webcam import TrumanCamera
 
 router = APIRouter(
@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 def gen_frames():
-    camera = cv2.VideoCapture(f'0')
+    camera = cv2.VideoCapture('0')
     while True:
         success, frame = camera.read()
         if not success:

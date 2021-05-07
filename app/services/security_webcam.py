@@ -10,7 +10,7 @@ from typing import Generator
 
 import cv2
 
-from app.conf.settings import logger
+from app.conf.logger import logger
 
 
 class TrumanCamera:
