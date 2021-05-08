@@ -1,10 +1,11 @@
-# import io
+import io
 # from starlette.responses import StreamingResponse
 
 from typing import Generator
 import cv2
 from fastapi import APIRouter, Response
 
+from starlette.responses import StreamingResponse
 from app.conf.logger import logger
 from app.services.security_webcam import TrumanCamera
 
@@ -14,7 +15,7 @@ router = APIRouter(
 
 
 def gen_frames():
-    camera = cv2.VideoCapture('0')
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()
         if not success:
@@ -24,8 +25,9 @@ def gen_frames():
             logger.info('Sending frames')
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            # yield (b'--frame\r\n'
+            #        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            return StreamingResponse(io.BytesIO(buffer.tobytes()), media_type="image/png")
     camera.release()
 
 
