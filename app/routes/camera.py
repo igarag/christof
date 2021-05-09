@@ -1,11 +1,8 @@
-import io
-# from starlette.responses import StreamingResponse
-
 from typing import Generator
 import cv2
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 
-from starlette.responses import StreamingResponse
 from app.conf.logger import logger
 from app.services.security_webcam import TrumanCamera
 
@@ -14,7 +11,7 @@ router = APIRouter(
 )
 
 
-def gen_frames():
+def generate_frames() -> Generator:
     camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()
@@ -22,25 +19,14 @@ def gen_frames():
             logger.error('No camera found.')
             break
         else:
-            logger.info('Sending frames')
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            # yield (b'--frame\r\n'
-            #        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            return StreamingResponse(io.BytesIO(buffer.tobytes()), media_type="image/png")
+            ret, img = cv2.imencode('.jpg', frame)
+            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
+                   bytearray(img) + b'\r\n')
     camera.release()
 
 
 @router.get('/video-feed')
-def video_feed() -> Response:
-    logger.debug(f'Sending frames')
-    headers = {'mimetype': 'multipart/x-mixed-replace; boundary=frame'}
-    return Response(gen_frames(), headers=headers)
-
-
-# @app.post("/vector-image")
-# def image_endpoint(*, vector):
-#     # Returns a cv2 image array from the document vector
-#     cv2img = my_function(vector)
-#     res, im_png = cv2.imencode(".png", cv2img)
-#     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
+def video_feed() -> StreamingResponse:
+    logger.debug(f'Sending images . . .')
+    return StreamingResponse(generate_frames(),
+                             media_type="multipart/x-mixed-replace;boundary=frame")

@@ -12,7 +12,7 @@ app = FastAPI()
 app.include_router(camera.router)
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-print(PROJECT_DIR)
+
 app.mount("/app/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
