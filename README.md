@@ -19,9 +19,9 @@ Mini home surveillance project using a simple webcam.
 
    *Note: For more information on the Poetry dependency manager visit [its documentation](https://python-poetry.org/docs/). The installation of the library can be done with the following command:*
 
-    ````bash
+    ```bash
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-  ```
+    ```
 
 - Via requirements:
 
