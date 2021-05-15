@@ -1,3 +1,6 @@
+# References:
+# https://github.com/stradivari96/modern-python-template/blob/main/.pre-commit-config.yaml
+
 default_language_version:
     python: python3.8
 
